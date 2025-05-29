@@ -1,1 +1,1483 @@
-<h1>欢迎访问</h1>
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>中文取名器 | ช่วยสร้างชื่อจีน</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#e63946',
+                        secondary: '#ffd166',
+                        accent: '#4cc9f0',
+                        dark: '#1d3557',
+                        light: '#f1faee',
+                        neutral: '#a8dadc'
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                        chinese: ['"Ma Shan Zheng"', 'cursive', 'sans-serif']
+                    },
+                    animation: {
+                        'float': 'float 3s ease-in-out infinite',
+                        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'fade-in': 'fadeIn 0.5s ease-in-out',
+                        'slide-up': 'slideUp 0.5s ease-out',
+                        'bounce-subtle': 'bounceSubtle 2s infinite'
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-10px)' }
+                        },
+                        fadeIn: {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1' }
+                        },
+                        slideUp: {
+                            '0%': { transform: 'translateY(20px)', opacity: '0' },
+                            '100%': { transform: 'translateY(0)', opacity: '1' }
+                        },
+                        bounceSubtle: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-5px)' }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .text-shadow {
+                text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            }
+            .text-shadow-lg {
+                text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.5);
+            }
+            .bg-pattern {
+                background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23e63946' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+            }
+            .card-hover {
+                transition: all 0.3s ease;
+            }
+            .card-hover:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            }
+            .btn-hover {
+                transition: all 0.3s ease;
+            }
+            .btn-hover:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            }
+            .scroll-smooth {
+                scroll-behavior: smooth;
+            }
+            .character-card {
+                position: relative;
+                overflow: hidden;
+                border-radius: 0.75rem;
+            }
+            .character-card::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: -100%;
+                width: 100%;
+                height: 100%;
+                background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+                transition: all 0.6s ease;
+            }
+            .character-card:hover::before {
+                left: 100%;
+            }
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&display=swap" rel="stylesheet">
+</head>
+<body class="bg-light bg-pattern min-h-screen flex flex-col">
+    <!-- 导航栏 -->
+    <nav class="bg-primary/95 text-white shadow-lg sticky top-0 z-50 backdrop-blur-sm">
+        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center space-x-2">
+                <i class="fa-solid fa-feather text-2xl text-secondary animate-pulse-slow"></i>
+                <div>
+                    <h1 class="text-xl md:text-2xl font-chinese font-bold">中文取名器</h1>
+                    <p class="text-xs md:text-sm opacity-80">ช่วยสร้างชื่อจีน</p>
+                </div>
+            </div>
+            <div class="flex items-center space-x-4">
+                <button id="toggleLanguage" class="bg-secondary text-dark rounded-full px-3 py-1 text-sm font-medium hover:bg-secondary/80 transition-colors duration-300">
+                    <i class="fa-solid fa-language mr-1"></i>
+                    <span id="languageText">ไทย</span>
+                </button>
+                <button id="helpBtn" class="bg-transparent hover:bg-white/10 rounded-full p-2 transition-colors duration-300">
+                    <i class="fa-solid fa-question"></i>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 主要内容 -->
+    <main class="flex-grow container mx-auto px-4 py-8">
+        <!-- 欢迎页面 -->
+        <section id="welcome" class="animate-fade-in">
+            <div class="max-w-3xl mx-auto text-center mb-12">
+                <h2 class="text-[clamp(2rem,5vw,3.5rem)] font-chinese text-primary text-shadow-lg mb-4">
+                    生成你的中文名
+                </h2>
+                <p class="text-dark/80 text-lg mb-8">
+                    สร้างชื่อจีนของคุณ
+                </p>
+                <p class="text-dark/70 mb-8">
+                    通过几个简单的步骤，为你生成一个具有中国文化特色的名字，包含姓氏、名字及其拼音和泰语翻译。
+                </p>
+                <p class="text-dark/70 mb-8">
+                    โดยผ่านไม่กี่ขั้นตอนง่ายๆ คุณจะได้รับชื่อที่มีความหมายและเอกลักษณะจากวัฒนธรรมจีน รวมถึงการออกเสียงและคำแปลภาษาไทย
+                </p>
+                <button id="startBtn" class="bg-primary hover:bg-primary/90 text-white font-bold py-3 px-8 rounded-full text-lg shadow-lg btn-hover animate-bounce-subtle">
+                    <i class="fa-solid fa-arrow-right mr-2"></i>开始取名
+                    <span class="ml-1">เริ่มสร้างชื่อ</span>
+                </button>
+            </div>
+
+            <!-- 装饰元素 -->
+            <div class="absolute inset-0 z-[-1] overflow-hidden">
+                <div class="absolute top-20 left-10 w-20 h-20 bg-secondary/20 rounded-full blur-3xl animate-float"></div>
+                <div class="absolute bottom-20 right-10 w-32 h-32 bg-accent/20 rounded-full blur-3xl animate-float" style="animation-delay: 1s"></div>
+                <div class="absolute top-1/2 left-1/4 w-28 h-28 bg-primary/10 rounded-full blur-3xl animate-float" style="animation-delay: 2s"></div>
+            </div>
+        </section>
+
+        <!-- 姓氏选择页面 -->
+        <section id="surname" class="hidden animate-fade-in">
+            <div class="max-w-4xl mx-auto">
+                <div class="text-center mb-10">
+                    <h2 class="text-[clamp(1.5rem,3vw,2.5rem)] font-chinese text-primary text-shadow mb-3">
+                        第一步：选择你的姓氏
+                    </h2>
+                    <p class="text-dark/80">
+                        ขั้นตอนที่ 1: เลือกสกุลของคุณ
+                    </p>
+                    <div class="w-20 h-1 bg-primary/50 mx-auto mt-4 rounded-full"></div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-10">
+                    <!-- 姓氏卡片 -->
+                </div>
+
+                <div class="flex justify-center mt-8">
+                    <button id="surnameNextBtn" class="bg-primary hover:bg-primary/90 text-white font-bold py-3 px-8 rounded-full text-lg shadow-lg btn-hover opacity-50 cursor-not-allowed">
+                        <i class="fa-solid fa-arrow-right mr-2"></i>下一步
+                        <span class="ml-1">ถัดไป</span>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- 性格选择页面 -->
+        <section id="character" class="hidden animate-fade-in">
+            <div class="max-w-4xl mx-auto">
+                <div class="text-center mb-10">
+                    <h2 class="text-[clamp(1.5rem,3vw,2.5rem)] font-chinese text-primary text-shadow mb-3">
+                        第二步：你的性格是？
+                    </h2>
+                    <p class="text-dark/80">
+                        ขั้นตอนที่ 2: คุณเป็นคนประเภทไหน?
+                    </p>
+                    <div class="w-20 h-1 bg-primary/50 mx-auto mt-4 rounded-full"></div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-10">
+                    <!-- 性格选项卡片 -->
+                </div>
+
+                <div class="flex justify-center mt-8">
+                    <button id="characterNextBtn" class="bg-primary hover:bg-primary/90 text-white font-bold py-3 px-8 rounded-full text-lg shadow-lg btn-hover opacity-50 cursor-not-allowed">
+                        <i class="fa-solid fa-arrow-right mr-2"></i>下一步
+                        <span class="ml-1">ถัดไป</span>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- 自然选择页面 -->
+        <section id="nature" class="hidden animate-fade-in">
+            <div class="max-w-4xl mx-auto">
+                <div class="text-center mb-10">
+                    <h2 class="text-[clamp(1.5rem,3vw,2.5rem)] font-chinese text-primary text-shadow mb-3">
+                        第三步：你喜欢？
+                    </h2>
+                    <p class="text-dark/80">
+                        ขั้นตอนที่ 3: คุณชอบอะไร?
+                    </p>
+                    <div class="w-20 h-1 bg-primary/50 mx-auto mt-4 rounded-full"></div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-10">
+                    <!-- 自然选项卡片 -->
+                </div>
+
+                <div class="flex justify-center mt-8">
+                    <button id="natureNextBtn" class="bg-primary hover:bg-primary/90 text-white font-bold py-3 px-8 rounded-full text-lg shadow-lg btn-hover opacity-50 cursor-not-allowed">
+                        <i class="fa-solid fa-arrow-right mr-2"></i>下一步
+                        <span class="ml-1">ถัดไป</span>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- 活动选择页面 -->
+        <section id="activity" class="hidden animate-fade-in">
+            <div class="max-w-4xl mx-auto">
+                <div class="text-center mb-10">
+                    <h2 class="text-[clamp(1.5rem,3vw,2.5rem)] font-chinese text-primary text-shadow mb-3">
+                        第四步：你喜欢做？
+                    </h2>
+                    <p class="text-dark/80">
+                        ขั้นตอนที่ 4: คุณชอบทำอะไร?
+                    </p>
+                    <div class="w-20 h-1 bg-primary/50 mx-auto mt-4 rounded-full"></div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-10">
+                    <!-- 活动选项卡片 -->
+                </div>
+
+                <div class="flex justify-center mt-8">
+                    <button id="activityNextBtn" class="bg-primary hover:bg-primary/90 text-white font-bold py-3 px-8 rounded-full text-lg shadow-lg btn-hover opacity-50 cursor-not-allowed">
+                        <i class="fa-solid fa-arrow-right mr-2"></i>下一步
+                        <span class="ml-1">ถัดไป</span>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- 性别选择页面 -->
+        <section id="gender" class="hidden animate-fade-in">
+            <div class="max-w-4xl mx-auto">
+                <div class="text-center mb-10">
+                    <h2 class="text-[clamp(1.5rem,3vw,2.5rem)] font-chinese text-primary text-shadow mb-3">
+                        第五步：选择性别
+                    </h2>
+                    <p class="text-dark/80">
+                        ขั้นตอนที่ 5: เลือกเพศ
+                    </p>
+                    <div class="w-20 h-1 bg-primary/50 mx-auto mt-4 rounded-full"></div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-8 mb-10 max-w-xl mx-auto">
+                    <!-- 性别选项卡片 -->
+                </div>
+
+                <div class="flex justify-center mt-8">
+                    <button id="genderNextBtn" class="bg-primary hover:bg-primary/90 text-white font-bold py-3 px-8 rounded-full text-lg shadow-lg btn-hover opacity-50 cursor-not-allowed">
+                        <i class="fa-solid fa-arrow-right mr-2"></i>下一步
+                        <span class="ml-1">ถัดไป</span>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- 名字长度选择页面 -->
+        <section id="nameLength" class="hidden animate-fade-in">
+            <div class="max-w-4xl mx-auto">
+                <div class="text-center mb-10">
+                    <h2 class="text-[clamp(1.5rem,3vw,2.5rem)] font-chinese text-primary text-shadow mb-3">
+                        第六步：名字长度
+                    </h2>
+                    <p class="text-dark/80">
+                        ขั้นตอนที่ 6: ความยาวของชื่อ
+                    </p>
+                    <div class="w-20 h-1 bg-primary/50 mx-auto mt-4 rounded-full"></div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-8 mb-10 max-w-xl mx-auto">
+                    <!-- 名字长度选项卡片 -->
+                </div>
+
+                <div class="flex justify-center mt-8">
+                    <button id="lengthNextBtn" class="bg-primary hover:bg-primary/90 text-white font-bold py-3 px-8 rounded-full text-lg shadow-lg btn-hover">
+                        <i class="fa-solid fa-star mr-2"></i>生成名字
+                        <span class="ml-1">สร้างชื่อ</span>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- 结果页面 -->
+        <section id="result" class="hidden animate-fade-in">
+            <div class="max-w-4xl mx-auto">
+                <div class="text-center mb-8">
+                    <h2 class="text-[clamp(1.5rem,3vw,2.5rem)] font-chinese text-primary text-shadow mb-3">
+                        你的中文名是
+                    </h2>
+                    <p class="text-dark/80">
+                        ชื่อจีนของคุณคือ
+                    </p>
+                    <div class="w-20 h-1 bg-primary/50 mx-auto mt-4 rounded-full"></div>
+                </div>
+
+                <div class="bg-white rounded-2xl shadow-xl p-8 mb-10 transform transition-all duration-500 hover:shadow-2xl">
+                    <div class="text-center mb-8">
+                        <div id="generatedName" class="text-[clamp(2.5rem,6vw,4rem)] font-chinese text-primary mb-2">
+                            王小明
+                        </div>
+                        <div id="generatedPinyin" class="text-[clamp(1.2rem,3vw,1.8rem)] text-dark/70 mb-4">
+                            Wáng Xiǎo Míng
+                        </div>
+                        <div id="generatedMeaning" class="text-[clamp(1rem,2vw,1.2rem)] text-dark/80">
+                            王 (Wang): สมบัติ, ชื่อสกุล<br>
+                            小 (Xiao): เล็ก, อ่อนเยาว์<br>
+                            明 (Ming): สดใส, ชาญฉลาด
+                        </div>
+                    </div>
+
+                    <div class="flex flex-wrap justify-center gap-4 mt-8">
+                        <button id="copyBtn" class="bg-accent hover:bg-accent/90 text-white font-bold py-3 px-6 rounded-full text-lg shadow-lg btn-hover">
+                            <i class="fa-solid fa-copy mr-2"></i>复制名字
+                            <span class="ml-1">คัดลอกชื่อ</span>
+                        </button>
+                        <button id="regenerateBtn" class="bg-secondary hover:bg-secondary/90 text-dark font-bold py-3 px-6 rounded-full text-lg shadow-lg btn-hover">
+                            <i class="fa-solid fa-refresh mr-2"></i>换一个
+                            <span class="ml-1">สร้างใหม่</span>
+                        </button>
+                        <button id="restartBtn" class="bg-dark hover:bg-dark/90 text-white font-bold py-3 px-6 rounded-full text-lg shadow-lg btn-hover">
+                            <i class="fa-solid fa-home mr-2"></i>重新开始
+                            <span class="ml-1">เริ่มใหม่</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="text-center mb-8">
+                    <h3 class="text-xl font-bold text-dark mb-3">名字解析</h3>
+                    <p class="text-dark/70">
+                        การตีความของชื่อ
+                    </p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
+                    <div class="bg-white rounded-xl shadow-lg p-6 transform transition-all duration-300 hover:shadow-xl">
+                        <h4 class="text-lg font-bold text-primary mb-3 flex items-center">
+                            <i class="fa-solid fa-feather mr-2"></i>名字含义
+                        </h4>
+                        <p class="text-dark/80" id="meaningExplanation">
+                            这个名字结合了"小"的可爱和"明"的智慧，非常适合性格开朗、聪明的人。整体名字给人一种亲切而充满活力的感觉。
+                        </p>
+                    </div>
+                    <div class="bg-white rounded-xl shadow-lg p-6 transform transition-all duration-300 hover:shadow-xl">
+                        <h4 class="text-lg font-bold text-primary mb-3 flex items-center">
+                            <i class="fa-solid fa-book mr-2"></i>文化背景
+                        </h4>
+                        <p class="text-dark/80" id="cultureExplanation">
+                            "王"是中国最常见的姓氏之一，历史悠久。"小"常被用作名字中的亲昵词，而"明"代表光明和智慧，是一个富有正能量的字。
+                        </p>
+                    </div>
+                </div>
+
+                <div class="text-center">
+                    <p class="text-dark/60 text-sm">
+                        ชื่อจีนของคุณถูกสร้างขึ้นโดยคำแนะนำจากวรรณกรรมและประเพณีจีน
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 帮助模态框 -->
+        <div id="helpModal" class="fixed inset-0 bg-black/50 z-50 flex items-center justify-center hidden backdrop-blur-sm">
+            <div class="bg-white rounded-2xl shadow-2xl max-w-2xl w-full mx-4 overflow-hidden transform transition-all duration-300 scale-95 opacity-0" id="modalContent">
+                <div class="bg-primary text-white p-6">
+                    <div class="flex justify-between items-center">
+                        <h3 class="text-xl font-bold">使用帮助</h3>
+                        <button id="closeHelpBtn" class="text-white hover:text-secondary transition-colors">
+                            <i class="fa-solid fa-times"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="p-6">
+                    <div class="space-y-4">
+                        <div>
+                            <h4 class="font-bold text-dark mb-2">如何使用中文取名器？</h4>
+                            <p class="text-dark/70">
+                                只需按照页面上的步骤，依次选择姓氏、性格特点、喜欢的自然元素、活动、性别和名字长度，系统将为你生成一个适合的中文名。เพียงทำตามขั้นตอนในหน้านี้และเลือกนามสกุล ลักษณะบุคลิกภาพ องค์ประกอบทางธรรมชาติที่ชื่นชอบ กิจกรรม เพศ และความยาวของชื่อ จากนั้นระบบจะสร้างชื่อภาษาจีนที่เหมาะสมให้กับคุณ
+                            </p>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-dark mb-2">名字是如何生成的？</h4>
+                            <p class="text-dark/70">
+                                系统会根据你选择的每一项，从大量的汉字中筛选出最匹配的组合，生成符合你个性和偏好的中文名。ระบบจะเลือกชื่อภาษาจีนที่ตรงกันมากที่สุดจากอักขระจีนจำนวนมากตามตัวเลือกแต่ละตัวที่คุณเลือก และสร้างชื่อภาษาจีนที่เหมาะกับบุคลิกภาพและความชอบของคุณ
+                            </p>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-dark mb-2">我可以修改已经生成的名字吗？</h4>
+                            <p class="text-dark/70">
+                                可以。点击"换一个"按钮，系统会保留你的姓氏，为你重新生成一个符合你其他选择的新名字。สามารถ. คลิกปุ่ม "เปลี่ยน" และระบบจะคงชื่อนามสกุลของคุณไว้และสร้างชื่อใหม่ให้กับคุณซึ่งตรงกับตัวเลือกอื่นๆ ของคุณ
+                            </p>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-dark mb-2">怎么重新开始？</h4>
+                            <p class="text-dark/70">
+                                请直接刷新页面。หากต้องการเริ่มต้นใหม่ เพียงแค่รีเฟรชหน้า
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-gray-50 p-4 text-center">
+                    <p class="text-dark/60 text-sm">
+                        如有其他问题，请联系我们
+                    </p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- 页脚 -->
+    <footer class="bg-dark text-white py-6">
+        <div class="container mx-auto px-4">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div class="mb-4 md:mb-0">
+                    <div class="flex items-center space-x-2">
+                        <i class="fa-solid fa-feather text-secondary"></i>
+                        <span class="font-chinese text-lg">@Rasetsuei-内部试用版</span>
+                    </div>
+                    <p class="text-white/70 text-sm mt-1">
+                       中文取名器  ช่วยสร้างชื่อจีน   
+                    </p>
+                </div>
+                <div class="flex space-x-4">
+                    <a href="#" class="text-white/70 hover:text-secondary transition-colors">
+                        <i class="fa-brands fa-weibo"></i>
+                    </a>
+                    <a href="#" class="text-white/70 hover:text-secondary transition-colors">
+                        <i class="fa-brands fa-wechat"></i>
+                    </a>
+                    <a href="#" class="text-white/70 hover:text-secondary transition-colors">
+                        <i class="fa-brands fa-instagram"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="border-t border-white/20 mt-6 pt-6 text-center text-white/60 text-sm">
+                <p>© 2025 中文取名器. 保留所有权利.</p>
+                <p class="mt-1">เว็บไซต์ช่วยสร้างชื่อจีน ออนไลน์ ฟรี</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // 数据模型
+        const data = {
+            // 中泰双语配置
+            languages: {
+                chinese: {
+                    welcomeTitle: "生成你的中文名",
+                    welcomeDesc: "通过几个简单的步骤，为你生成一个具有中国文化特色的名字，包含姓氏、名字及其拼音和泰语翻译。",
+                    startBtn: "开始取名",
+                    step1: "第一步：选择你的姓氏",
+                    step2: "第二步：你的性格是？",
+                    step3: "第三步：你喜欢？",
+                    step4: "第四步：你喜欢做？",
+                    step5: "第五步：选择性别",
+                    step6: "第六步：名字长度",
+                    resultTitle: "你的中文名是",
+                    copyBtn: "复制名字",
+                    regenerateBtn: "换一个",
+                    restartBtn: "重新开始",
+                    meaningTitle: "名字含义",
+                    cultureTitle: "文化背景"
+                },
+                thai: {
+                    welcomeTitle: "สร้างชื่อจีนของคุณ",
+                    welcomeDesc: "โดยผ่านไม่กี่ขั้นตอนง่ายๆ คุณจะได้รับชื่อที่มีความหมายและเอกลักษณะจากวัฒนธรรมจีน รวมถึงการออกเสียงและคำแปลภาษาไทย",
+                    startBtn: "เริ่มสร้างชื่อ",
+                    step1: "ขั้นตอนที่ 1: เลือกสกุลของคุณ",
+                    step2: "ขั้นตอนที่ 2: คุณเป็นคนประเภทไหน?",
+                    step3: "ขั้นตอนที่ 3: คุณชอบอะไร?",
+                    step4: "ขั้นตอนที่ 4: คุณชอบทำอะไร?",
+                    step5: "ขั้นตอนที่ 5: เลือกเพศ",
+                    step6: "ขั้นตอนที่ 6: ความยาวของชื่อ",
+                    resultTitle: "ชื่อจีนของคุณคือ",
+                    copyBtn: "คัดลอกชื่อ",
+                    regenerateBtn: "สร้างใหม่",
+                    restartBtn: "เริ่มใหม่",
+                    meaningTitle: "ความหมายของชื่อ",
+                    cultureTitle: "ภูมิหลังทางวัฒนธรรม"
+                }
+            },
+            // 百家姓前12个
+            surnames: [
+                { character: "王", pinyin: "Wáng", meaning: "国王", thai: "สมบัติ, ชื่อสกุล", image: "https://pic.baike.soso.com/ugc/baikepic2/0/20220409144136-843902725_jpg_747_638_175835.jpg/800" },
+                { character: "李", pinyin: "Lǐ", meaning: "李子树", thai: "ต้นผีซี, ชื่อสกุล", image: "https://pic.baike.soso.com/ugc/baikepic2/0/ori-20230317145833-1932489681_jpeg_750_495_81242.jpg/800" },
+                { character: "张", pinyin: "Zhāng", meaning: "张开", thai: "เปิด, ชื่อสกุล", image: "https://pic.baike.soso.com/ugc/baikepic2/0/ori-20200713171853-1225745279_jpeg_1018_733_73148.jpg/800" },
+                { character: "刘", pinyin: "Liú", meaning: "斧钺", thai: "อาวุธ, ชื่อสกุล", image: "https://pic.baike.soso.com/ugc/baikepic2/0/20220323191111-906395279_jpeg_600_800_26032.jpg/800" },
+                { character: "陈", pinyin: "Chén", meaning: "陈列", thai: "จัดแสดง, ชื่อสกุล", image: "https://pic.baike.soso.com/ugc/baikepic2/0/20220405132101-1176531162_jpg_3008_2000_490400.jpg/800" },
+                { character: "杨", pinyin: "Yáng", meaning: "杨树", thai: "ต้นโพธิ์, ชื่อสกุล", image: "https://pic.baike.soso.com/ugc/baikepic2/0/ori-20200801223235-1681206450_jpeg_754_617_131450.jpg/800" },
+                { character: "赵", pinyin: "Zhào", meaning: "周朝国名", thai: "ชื่อประเทศในยุคชู, ชื่อสกุล", image: "https://pic.baike.soso.com/ugc/baikepic2/0/ori-20200421181724-1986444076_png_1242_792_68032.jpg/800" },
+                { character: "黄", pinyin: "Huáng", meaning: "黄土", thai: "ที่ดินสีเหลือง", image: "https://pic.baike.soso.com/ugc/baikepic2/0/20220422104246-704150112_jpg_750_500_74739.jpg/800 "},
+		{ character: "周", pinyin: "Zhōu", meaning: "周密", thai: "ระมัดระวัง, ชื่อสกุล", image: "https://pic.baike.soso.com/ugc/baikepic2/14235/20160715193008-1796503424.jpg/800" },
+                { character: "吴", pinyin: "Wú", meaning: "大声说话", thai: "พูดดัง, ชื่อสกุล", image: "https://pic.baike.soso.com/ugc/baikepic2/0/ori-20220402191832-2118361037_jpeg_736_443_42208.jpg/800" },
+                { character: "徐", pinyin: "Xú", meaning: "缓慢", thai: "ช้าๆ, ชื่อสกุล", image: "https://pic.baike.soso.com/ugc/baikepic2/0/ori-20200720132415-1986469069_jpeg_658_411_34587.jpg/800" },
+                { character: "白", pinyin: "Bái", meaning: "白色", thai: "ขาว, ความบริสุทธิ์", image: "https://pic.baike.soso.com/ugc/baikepic2/0/20181031174746-716987895_jpeg_800_600_33347.jpg/0" }
+            ],
+            // 性格选项
+            characters: [
+                { character: "善良", pinyin: "Shàn Liáng", meaning: "Kind", thai: "ใจดี", value: "kind" },
+                { character: "活泼", pinyin: "Huó Pō", meaning: "Lively", thai: "ช่างชาติ", value: "lively" },
+                { character: "安静", pinyin: "Ān Jìng", meaning: "Quiet", thai: "เงียบสงบ" },
+                { character: "冷酷", pinyin: "Lěng Kù", meaning: "Cold", thai: "เย็นสงี่ยม", value: "cold" },
+                { character: "认真", pinyin: "Rèn Zhēn", meaning: "Serious", thai: "จริงจัง", value: "serious" },
+                { character: "幽默", pinyin: "Yōu Mò", meaning: "Humorous", thai: "ตลก", value: "humorous" }
+            ],
+            // 自然选项
+            natures: [
+                { character: "森林", pinyin: "Sēn Lín", meaning: "Forest", thai: "ป่าไม้", value: "forest", imageUrl: "https://pic.baike.soso.com/ugc/baikepic2/0/20220406095118-739169826_png_627_369_608354.jpg/800" },
+                { character: "大海", pinyin: "Dà Hǎi", meaning: "Ocean", thai: "ทะเล", value: "ocean", imageUrl: "https://pic.baike.soso.com/ugc/baikepic2/0/20220726162101-2105117047_jpeg_1920_1080_202243.jpg/800" },
+                { character: "沙漠", pinyin: "Shā Mò", meaning: "Desert", thai: "ทะเลทราย", value: "desert" , imageUrl: "https://pic.baike.soso.com/ugc/baikepic2/0/20220424100428-231920502_png_826_543_861281.jpg/800" },
+                { character: "天空", pinyin: "Tiān Kōng", meaning: "Sky", thai: "ท้องฟ้า", value: "sky", imageUrl: "https://pic.baike.soso.com/ugc/baikepic2/0/20220408155931-1197315218_png_651_523_604488.jpg/800" }
+            ],
+            // 活动选项
+            activities: [
+                { character: "读书", pinyin: "Dú Shū", meaning: "Reading", thai: "อ่านหนังสือ", value: "reading", imageUrl: "https://pic.baike.soso.com/ugc/baikepic2/0/20230917173513-961803974_jpg_1788_1280_284993.jpg/800" },
+                { character: "运动", pinyin: "Yùn Dòng", meaning: "Sports", thai: "ออกกำลังกาย", value: "sports", imageUrl: "https://pic.baike.soso.com/ugc/baikepic2/0/20230712134322-1834706504_jpg_750_500_138877.jpg/800" },
+                { character: "睡觉", pinyin: "Shuì Jiào", meaning: "Sleeping", thai: "นอนหลับ", value: "sleeping", imageUrl: "https://pic.baike.soso.com/ugc/baikepic2/0/20230806215048-1226706904_jpeg_2560_1600_476518.jpg/800" },
+                { character: "玩游戏", pinyin: "Wán Yóu Xì", meaning: "Playing Games", thai: "เล่นเกม", value: "gaming" , imageUrl: "https://pic.baike.soso.com/ugc/baikepic2/0/ori-20220517101032-282788253_jpeg_1000_673_180742.jpg/800"}
+            ],
+            // 性别选项
+            genders: [
+                { character: "男", pinyin: "Nán", meaning: "Male", thai: "ชาย", value: "male" },
+                { character: "女", pinyin: "Nǚ", meaning: "Female", thai: "หญิง", value: "female" }
+            ],
+            // 名字长度选项
+            nameLengths: [
+                { character: "两个字", pinyin: "Liǎng Gè Zì", meaning: "Two Characters", thai: "สองตัวอักษร", value: 2 },
+                { character: "三个字", pinyin: "Sān Gè Zì", meaning: "Three Characters", thai: "สามตัวอักษร", value: 3 }
+            ],
+            // 名字字典
+            nameDictionary: {
+                // 姓氏对应常用名
+                surnames: {
+                    "王": ["伟", "芳", "娜", "秀英", "敏", "静", "强", "磊", "军", "洋", "勇", "艳"],
+                    "李": ["娜", "秀英", "敏", "静", "强", "磊", "军", "洋", "勇", "艳", "杰", "浩"],
+                    "张": ["伟", "芳", "娜", "秀英", "敏", "静", "强", "磊", "军", "洋", "勇", "艳"],
+                    "刘": ["娜", "秀英", "敏", "静", "强", "磊", "军", "洋", "勇", "艳", "杰", "浩"],
+                    "陈": ["伟", "芳", "娜", "秀英", "敏", "静", "强", "磊", "军", "洋", "勇", "艳"],
+                    "杨": ["伟", "芳", "娜", "秀英", "敏", "静", "强", "磊", "军", "洋", "勇", "艳"],
+                    "赵": ["伟", "芳", "娜", "秀英", "敏", "静", "强", "磊", "军", "洋", "勇", "艳"],
+                    "黄": ["伟", "芳", "娜", "秀英", "敏", "静", "强", "磊", "军", "洋", "勇", "艳"],
+                    "周": ["伟", "芳", "娜", "秀英", "敏", "静", "强", "磊", "军", "洋", "勇", "艳"],
+                    "吴": ["伟", "芳", "娜", "秀英", "敏", "静", "强", "磊", "军", "洋", "勇", "艳"],
+                    "徐": ["伟", "芳", "娜", "秀英", "敏", "静", "强", "磊", "军", "洋", "勇", "艳"],
+                    "白": ["伟", "芳", "娜", "秀英", "敏", "静", "强", "磊", "军", "洋", "勇", "艳"]
+                },
+                // 性格对应常用名
+                characters: {
+                    "kind": ["仁", "善", "慈", "爱", "惠", "柔", "和", "厚", "宽", "容"],
+                    "lively": ["欢", "乐", "跃", "动", "活", "灵", "欣", "兴", "喜", "悦"],
+                    "quiet": ["静", "宁", "谧", "默", "幽", "雅", "恬", "淡", "安", "谧"],
+                    "cold": ["冰", "雪", "霜", "寒", "冷", "漠", "傲", "孤", "清", "寂"],
+                    "serious": ["严", "谨", "慎", "重", "庄", "肃", "正", "诚", "信", "实"],
+                    "humorous": ["笑", "欢", "诙", "谐", "趣", "默", "侃", "谈", "悦", "欣"]
+                },
+                // 自然对应常用名
+                natures: {
+                    "forest": ["森", "林", "树", "木", "枝", "叶", "松", "柏", "枫", "桐"],
+                    "ocean": ["海", "洋", "波", "涛", "浪", "水", "湖", "河", "江", "泉"],
+                    "desert": ["沙", "漠", "石", "岩", "丘", "山", "川", "野", "旷", "广"],
+                    "sky": ["天", "空", "云", "霞", "星", "月", "日", "晨", "暮", "晖"]
+                },
+                // 活动对应常用名
+                activities: {
+                    "reading": ["书", "文", "字", "墨", "笔", "画", "诗", "词", "赋", "章"],
+                    "sports": ["运", "动", "健", "强", "力", "速", "飞", "跃", "奔", "驰"],
+                    "sleeping": ["梦", "眠", "睡", "安", "宁", "静", "甜", "香", "稳", "适"],
+                    "gaming": ["游", "戏", "玩", "乐", "趣", "娱", "欢", "喜", "笑", "悦"]
+                },
+                // 性别对应常用名
+                genders: {
+                    "male": ["伟", "强", "军", "杰", "峰", "磊", "刚", "勇", "健", "飞", "鹏", "浩", "宇", "天", "阳", "光", "明", "亮", "星", "晨"],
+                    "female": ["芳", "娜", "秀英", "敏", "静", "丽", "娟", "艳", "淑", "婷", "慧", "琳", "佳", "雪", "月", "云", "梦", "花", "美", "莲"]
+                },
+                // 名字含义字典
+                meanings: {
+                    "伟": ["伟大", "สูงใหญ่"],
+                    "芳": ["芳香", "หอมเยาว์"],
+                    "娜": ["婀娜", "สวยงาม"],
+                    "秀英": ["秀丽英俊", "สวยและกล้าหาญ"],
+                    "敏": ["敏捷", "รวดเร็ว"],
+                    "静": ["安静", "เงียบสงบ"],
+                    "强": ["强壮", "แข็งแรง"],
+                    "磊": ["光明磊落", "สุจริต"],
+                    "军": ["军人", "ทหาร"],
+                    "洋": ["海洋", "มหาสมุทร"],
+                    "勇": ["勇敢", "กล้าหาญ"],
+                    "艳": ["艳丽", "สวยงาม"],
+                    "杰": ["杰出", "โดดเด่น"],
+                    "浩": ["浩大", "กว้างใหญ่"],
+                    "仁": ["仁爱", "เมตตา"],
+                    "善": ["善良", "ใจดี"],
+                    "慈": ["慈爱", "ความรัก"],
+                    "爱": ["爱", "รัก"],
+                    "惠": ["恩惠", "ความเมตตา"],
+                    "柔": ["温柔", "อ่อนเยาว์"],
+                    "和": ["和平", "สันติภาพ"],
+                    "厚": ["厚道", "ซื่อสัตย์"],
+                    "宽": ["宽容", "ยอมรับ"],
+                    "容": ["包容", "ยอมรับ"],
+                    "欢": ["欢乐", "สุข"],
+                    "乐": ["快乐", "สุข"],
+                    "跃": ["跳跃", "กระโดด"],
+                    "动": ["运动", "การเคลื่อนไหว"],
+                    "活": ["活泼", "ช่างชาติ"],
+                    "灵": ["灵活", "คล่องแคล่ว"],
+                    "欣": ["欣喜", "ยินดี"],
+                    "兴": ["兴奋", "ตื่นเต้น"],
+                    "喜": ["喜悦", "ความสุข"],
+                    "悦": ["愉悦", "สุขสันต์"],
+                    "宁": ["宁静", "เงียบสงบ"],
+                    "谧": ["静谧", "เงียบสงบ"],
+                    "默": ["沉默", "เงียบ"],
+                    "幽": ["幽静", "เงียบสงบ"],
+                    "雅": ["优雅", "สุภาพ"],
+                    "恬": ["恬静", "สงบสุข"],
+                    "淡": ["淡泊", "ไม่โลภ"],
+                    "冰": ["冰雪", "น้ำแข็ง"],
+                    "雪": ["雪", "หิมะ"],
+                    "霜": ["霜", "น้ำค้างแข็ง"],
+                    "寒": ["寒冷", "หนาวเย็น"],
+                    "漠": ["冷漠", "เย็นสงี่ยม"],
+                    "傲": ["傲慢", "หยิ่งผู้อื่น"],
+                    "孤": ["孤独", "โดดเดี่ยว"],
+                    "清": ["清澈", "สะอาด"],
+                    "寂": ["寂静", "เงียบสงบ"],
+                    "严": ["严格", "เข้มงวด"],
+                    "谨": ["谨慎", "ระมัดระวัง"],
+                    "慎": ["慎重", "ระมัดระวัง"],
+                    "重": ["重要", "สำคัญ"],
+                    "庄": ["庄重", "เคร่งครัด"],
+                    "肃": ["严肃", "เคร่งครัด"],
+                    "正": ["正直", "ซื่อสัตย์"],
+                    "诚": ["诚实", "ซื่อสัตย์"],
+                    "信": ["信任", "ความเชื่อ"],
+                    "实": ["实际", "จริงจัง"],
+                    "笑": ["笑", "หัวเราะ"],
+                    "诙": ["诙谐", "ตลก"],
+                    "谐": ["和谐", "สามัคคี"],
+                    "趣": ["趣味", "ความสนุก"],
+                    "侃": ["侃侃", "พูดอย่างเป็นธรรม"],
+                    "谈": ["谈话", "การสนทนา"],
+                    "森": ["森林", "ป่าไม้"],
+                    "树": ["树", "ต้นไม้"],
+                    "木": ["木", "ไม้"],
+                    "枝": ["枝", "กิ่งไม้"],
+                    "叶": ["叶", "ใบไม้"],
+                    "松": ["松", "ต้นสน"],
+                    "柏": ["柏", "ต้นโพธิ์"],
+                    "枫": ["枫", "ต้นโครตัน"],
+                    "桐": ["桐", "ต้นตอง"],
+                    "波": ["波", "คลื่น"],
+                    "涛": ["涛", "คลื่นยักษ์"],
+                    "浪": ["浪", "คลื่น"],
+                    "湖": ["湖", "ทะเลสาบ"],
+                    "河": ["河", "แม่น้ำ"],
+                    "江": ["江", "แม่น้ำใหญ่"],
+                    "泉": ["泉", "น้ำพุ"],
+                    "沙": ["沙", "ทราย"],
+                    "石": ["石", "หิน"],
+                    "岩": ["岩", "ภูเขาหิน"],
+                    "丘": ["丘", "เนินเขาเล็ก"],
+                    "川": ["川", "ท้องถิ่น"],
+                    "野": ["野", "ทุ่ง"],
+                    "旷": ["旷", "กว้างขวาง"],
+                    "广": ["广", "กว้าง"],
+                    "云": ["云", "เมฆ"],
+                    "霞": ["霞", "แสงตะวันตก"],
+                    "星": ["星", "ดาว"],
+                    "月": ["月", "ดวงจันทร์"],
+                    "日": ["日", "ดวงอาทิตย์"],
+                    "晨": ["晨", "เช้า"],
+                    "暮": ["暮", "เย็น"],
+                    "晖": ["晖", "แสง"],
+                    "书": ["书", "หนังสือ"],
+                    "文": ["文", "วรรณกรรม"],
+                    "字": ["字", "อักษร"],
+                    "墨": ["墨", "หมึก"],
+                    "笔": ["笔", "ปากกา"],
+                    "画": ["画", "ภาพวาด"],
+                    "诗": ["诗", "บทกวี"],
+                    "词": ["词", "คำศัพท์"],
+                    "赋": ["赋", "บทกวี"],
+                    "章": ["章", "บท"],
+                    "运": ["运", "การเคลื่อนที่"],
+                    "健": ["健", "แข็งแรง"],
+                    "力": ["力", "พลัง"],
+                    "速": ["速", "ความเร็ว"],
+                    "飞": ["飞", "บิน"],
+                    "跃": ["跃", "กระโดด"],
+                    "奔": ["奔", "วิ่งเร็ว"],
+                    "驰": ["驰", "ขับรถเร็ว"],
+                    "梦": ["梦", "ความฝัน"],
+                    "眠": ["眠", "การนอนหลับ"],
+                    "甜": ["甜", "หวาน"],
+                    "香": ["香", "หอม"],
+                    "稳": ["稳", "ปลอดภัย"],
+                    "适": ["适", "เหมาะสม"],
+                    "游": ["游", "การเล่น"],
+                    "戏": ["戏", "เกม"],
+                    "玩": ["玩", "เล่น"],
+                    "娱": ["娱", "ความบันเทิง"],
+                    "鹏": ["鹏", "นกกระทุง"],
+                    "宇": ["宇", "ท้องฟ้า"],
+                    "天": ["天", "ท้องฟ้า"],
+                    "阳": ["阳", "แสงอาทิตย์"],
+                    "光": ["光", "แสง"],
+                    "亮": ["亮", "สว่าง"],
+                    "花": ["花", "ดอกไม้"],
+                    "美": ["美", "ความสวย"],
+                    "莲": ["莲", "สNelumbo nucifera"]
+                },
+                // 名字拼音字典
+                pinyins: {
+			
+                    "王": "Wáng",
+                    "李": "Lǐ",
+                    "张": "Zhāng",
+                    "刘": "Liú",
+                    "陈": "Chén",
+                    "杨": "Yáng",
+                    "赵": "Zhào",
+                    "黄": "Huáng",
+                    "周": "Zhōu",
+                    "吴": "Wú",
+                    "徐": "Xú",
+                    "白": "Bái",
+                    "伟": "Wěi",
+                    "芳": "Fāng",
+                    "娜": "Nà",
+                    "秀英": "Xiù Yīng",
+                    "敏": "Mǐn",
+                    "静": "Jìng",
+                    "强": "Qiáng",
+                    "磊": "Lěi",
+                    "军": "Jūn",
+                    "洋": "Yáng",
+                    "勇": "Yǒng",
+                    "艳": "Yàn",
+                    "杰": "Jié",
+                    "浩": "Hào",
+                    "仁": "Rén",
+                    "善": "Shàn",
+                    "慈": "Cí",
+                    "爱": "Ài",
+                    "惠": "Huì",
+                    "柔": "Róu",
+                    "和": "Hé",
+                    "厚": "Hòu",
+                    "宽": "Kuān",
+                    "容": "Róng",
+                    "欢": "Huān",
+                    "乐": "Lè",
+                    "跃": "Yuè",
+                    "动": "Dòng",
+                    "活": "Huó",
+                    "灵": "Líng",
+                    "欣": "Xīn",
+                    "兴": "Xīng",
+                    "喜": "Xǐ",
+                    "悦": "Yuè",
+                    "宁": "Níng",
+                    "谧": "Mì",
+                    "默": "Mò",
+                    "幽": "Yōu",
+                    "雅": "Yǎ",
+                    "恬": "Tián",
+                    "淡": "Dàn",
+                    "冰": "Bīng",
+                    "雪": "Xuě",
+                    "霜": "Shuāng",
+                    "寒": "Hán",
+                    "漠": "Mò",
+                    "傲": "Ào",
+                    "孤": "Gū",
+                    "清": "Qīng",
+                    "寂": "Jì",
+                    "严": "Yán",
+                    "谨": "Jǐn",
+                    "慎": "Shèn",
+                    "重": "Zhòng",
+                    "庄": "Zhuāng",
+                    "肃": "Sù",
+                    "正": "Zhèng",
+                    "诚": "Chéng",
+                    "信": "Xìn",
+                    "实": "Shí",
+                    "笑": "Xiào",
+                    "诙": "Huī",
+                    "谐": "Xié",
+                    "趣": "Qù",
+                    "侃": "Kǎn",
+                    "谈": "Tán",
+                    "森": "Sēn",
+                    "树": "Shù",
+                    "木": "Mù",
+                    "枝": "Zhī",
+                    "叶": "Yè",
+                    "松": "Sōng",
+                    "柏": "Bǎi",
+                    "枫": "Fēng",
+                    "桐": "Tóng",
+                    "波": "Bō",
+                    "涛": "Tāo",
+                    "浪": "Làng",
+                    "湖": "Hú",
+                    "河": "Hé",
+                    "江": "Jiāng",
+                    "泉": "Quán",
+                    "沙": "Shā",
+                    "石": "Shí",
+                    "岩": "Yán",
+                    "丘": "Qiū",
+                    "川": "Chuān",
+                    "野": "Yě",
+                    "旷": "Kuàng",
+                    "广": "Guǎng",
+                    "云": "Yún",
+                    "霞": "Xiá",
+                    "星": "Xīng",
+                    "月": "Yuè",
+                    "日": "Rì",
+                    "晨": "Chén",
+                    "暮": "Mù",
+                    "晖": "Huī",
+                    "书": "Shū",
+                    "文": "Wén",
+                    "字": "Zì",
+                    "墨": "Mò",
+                    "笔": "Bǐ",
+                    "画": "Huà",
+                    "诗": "Shī",
+                    "词": "Cí",
+                    "赋": "Fù",
+                    "章": "Zhāng",
+                    "运": "Yùn",
+                    "健": "Jiàn",
+                    "力": "Lì",
+                    "速": "Sù",
+                    "飞": "Fēi",
+                    "跃": "Yuè",
+                    "奔": "Bēn",
+                    "驰": "Chí",
+                    "梦": "Mèng",
+                    "眠": "Mián",
+                    "甜": "Tián",
+                    "香": "Xiāng",
+                    "稳": "Wěn",
+                    "适": "Shì",
+                    "游": "Yóu",
+                    "戏": "Xì",
+                    "玩": "Wán",
+                    "娱": "Yú",
+                    "鹏": "Péng",
+                    "宇": "Yǔ",
+                    "天": "Tiān",
+                    "阳": "Yáng",
+                    "光": "Guāng",
+                    "亮": "Liàng",
+                    "花": "Huā",
+                    "美": "Měi",
+                    "莲": "Lián"
+                }
+            }
+        };
+
+        // 用户选择
+        const userSelection = {
+            surname: null,
+            character: null,
+            nature: null,
+            activity: null,
+            gender: null,
+            nameLength: null
+        };
+
+        // 初始化页面
+        document.addEventListener('DOMContentLoaded', function() {
+            // 初始化姓氏选择页面
+            initSurnamePage();
+            // 初始化性格选择页面
+            initCharacterPage();
+            // 初始化自然选择页面
+            initNaturePage();
+            // 初始化活动选择页面
+            initActivityPage();
+            // 初始化性别选择页面
+            initGenderPage();
+            // 初始化名字长度选择页面
+            initNameLengthPage();
+
+            // 绑定按钮事件
+            document.getElementById('startBtn').addEventListener('click', function() {
+                showPage('surname');
+            });
+
+            document.getElementById('surnameNextBtn').addEventListener('click', function() {
+                if (userSelection.surname) {
+                    showPage('character');
+                }
+            });
+
+            document.getElementById('characterNextBtn').addEventListener('click', function() {
+                if (userSelection.character) {
+                    showPage('nature');
+                }
+            });
+
+            document.getElementById('natureNextBtn').addEventListener('click', function() {
+                if (userSelection.nature) {
+                    showPage('activity');
+                }
+            });
+
+            document.getElementById('activityNextBtn').addEventListener('click', function() {
+                if (userSelection.activity) {
+                    showPage('gender');
+                }
+            });
+
+            document.getElementById('genderNextBtn').addEventListener('click', function() {
+                if (userSelection.gender) {
+                    showPage('nameLength');
+                }
+            });
+
+            document.getElementById('lengthNextBtn').addEventListener('click', function() {
+                if (userSelection.nameLength) {
+                    generateName();
+                    showPage('result');
+                }
+            });
+
+            document.getElementById('copyBtn').addEventListener('click', function() {
+                const nameElement = document.getElementById('generatedName');
+                const pinyinElement = document.getElementById('generatedPinyin');
+                const textToCopy = nameElement.textContent + ' ' + pinyinElement.textContent;
+                
+                navigator.clipboard.writeText(textToCopy).then(function() {
+                    showToast('名字已复制到剪贴板!');
+                }).catch(function(err) {
+                    console.error('无法复制文本: ', err);
+                    showToast('复制失败，请手动复制', true);
+                });
+            });
+
+            document.getElementById('regenerateBtn').addEventListener('click', function() {
+                generateName();
+            });
+
+            document.getElementById('restartBtn').addEventListener('click', function() {
+                resetAllSelections();
+                showPage('welcome');
+            });
+
+            document.getElementById('toggleLanguage').addEventListener('click', function() {
+                toggleLanguage();
+            });
+
+            document.getElementById('helpBtn').addEventListener('click', function() {
+                showHelpModal(true);
+            });
+
+            document.getElementById('closeHelpBtn').addEventListener('click', function() {
+                showHelpModal(false);
+            });
+
+            // 点击模态框外部关闭
+            document.getElementById('helpModal').addEventListener('click', function(e) {
+                if (e.target === this) {
+                    showHelpModal(false);
+                }
+            });
+
+            // 初始化帮助模态框动画
+            const modalContent = document.getElementById('modalContent');
+            modalContent.addEventListener('transitionend', function() {
+                if (this.classList.contains('opacity-0')) {
+                    document.getElementById('helpModal').classList.add('hidden');
+                }
+            });
+        });
+
+        // 显示指定页面
+        function showPage(pageId) {
+            // 隐藏所有页面
+            const pages = document.querySelectorAll('main > section');
+            pages.forEach(page => {
+                page.classList.add('hidden');
+            });
+
+            // 显示指定页面
+            const currentPage = document.getElementById(pageId);
+            currentPage.classList.remove('hidden');
+            
+            // 平滑滚动到顶部
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        }
+
+        // 初始化姓氏选择页面
+        function initSurnamePage() {
+            const container = document.querySelector('#surname .grid');
+            container.innerHTML = '';
+
+            data.surnames.forEach(surname => {
+                const card = document.createElement('div');
+                card.className = 'bg-white rounded-xl shadow-lg overflow-hidden character-card hover:shadow-xl transition-all duration-300';
+                card.dataset.value = surname.character;
+
+                card.innerHTML = `
+                    <div class="relative h-48 overflow-hidden">
+                        <img src="${surname.image}" alt="${surname.character}" class="w-full h-full object-cover transition-transform duration-500 hover:scale-110">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex items-end">
+                            <div class="p-4">
+                                <h3 class="text-2xl font-chinese text-white">${surname.character}</h3>
+                                <p class="text-white/80 text-sm">${surname.pinyin}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-4">
+                        <h4 class="font-bold text-dark mb-1">含义 / ความหมาย</h4>
+                        <p class="text-dark/70 text-sm">${surname.meaning} / ${surname.thai}</p>
+                    </div>
+                `;
+
+                card.addEventListener('click', function() {
+                    // 移除其他卡片的选中状态
+                    document.querySelectorAll('#surname .character-card').forEach(c => {
+                        c.classList.remove('ring-4', 'ring-primary');
+                    });
+                    
+                    // 添加选中状态
+                    this.classList.add('ring-4', 'ring-primary');
+                    
+                    // 保存用户选择
+                    userSelection.surname = this.dataset.value;
+                    
+                    // 启用下一步按钮
+                    document.getElementById('surnameNextBtn').classList.remove('opacity-50', 'cursor-not-allowed');
+                });
+
+                container.appendChild(card);
+            });
+        }
+
+        // 初始化性格选择页面
+        function initCharacterPage() {
+            const container = document.querySelector('#character .grid');
+            container.innerHTML = '';
+
+            data.characters.forEach(character => {
+                const card = document.createElement('div');
+                card.className = 'bg-white rounded-xl shadow-lg p-6 text-center card-hover';
+                card.dataset.value = character.value;
+
+                card.innerHTML = `
+                    <div class="text-3xl font-chinese text-primary mb-2">${character.character}</div>
+                    <div class="text-lg text-dark/80 mb-1">${character.pinyin}</div>
+                    <div class="text-sm text-dark/60 mb-3">${character.meaning} / ${character.thai}</div>
+                    <div class="w-10 h-1 bg-primary/30 mx-auto rounded-full"></div>
+                `;
+
+                card.addEventListener('click', function() {
+                    // 移除其他卡片的选中状态
+                    document.querySelectorAll('#character .card-hover').forEach(c => {
+                        c.classList.remove('bg-primary/5', 'ring-2', 'ring-primary');
+                    });
+                    
+                    // 添加选中状态
+                    this.classList.add('bg-primary/5', 'ring-2', 'ring-primary');
+                    
+                    // 保存用户选择
+                    userSelection.character = this.dataset.value;
+                    
+                    // 启用下一步按钮
+                    document.getElementById('characterNextBtn').classList.remove('opacity-50', 'cursor-not-allowed');
+                });
+
+                container.appendChild(card);
+            });
+        }
+
+        // 初始化自然选择页面
+        function initNaturePage() {
+            const container = document.querySelector('#nature .grid');
+            container.innerHTML = '';
+
+            data.natures.forEach(nature => {
+                const card = document.createElement('div');
+                card.className = 'bg-white rounded-xl shadow-lg overflow-hidden character-card';
+                card.dataset.value = nature.value;
+
+                card.innerHTML = `
+                    <div class="relative h-48 overflow-hidden">
+                       <img src="${nature.imageUrl}" alt="${nature.character}" class="w-full h-full object-cover...">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex items-end">
+                            <div class="p-4">
+                                <h3 class="text-2xl font-chinese text-white">${nature.character}</h3>
+                                <p class="text-white/80 text-sm">${nature.pinyin}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-4">
+                        <h4 class="font-bold text-dark mb-1">${nature.meaning} / ${nature.thai}</h4>
+                    </div>
+                `;
+
+                card.addEventListener('click', function() {
+                    // 移除其他卡片的选中状态
+                    document.querySelectorAll('#nature .character-card').forEach(c => {
+                        c.classList.remove('ring-4', 'ring-primary');
+                    });
+                    
+                    // 添加选中状态
+                    this.classList.add('ring-4', 'ring-primary');
+                    
+                    // 保存用户选择
+                    userSelection.nature = this.dataset.value;
+                    
+                    // 启用下一步按钮
+                    document.getElementById('natureNextBtn').classList.remove('opacity-50', 'cursor-not-allowed');
+                });
+
+                container.appendChild(card);
+            });
+        }
+
+        // 初始化活动选择页面
+        function initActivityPage() {
+            const container = document.querySelector('#activity .grid');
+            container.innerHTML = '';
+
+            data.activities.forEach(activity => {
+                const card = document.createElement('div');
+                card.className = 'bg-white rounded-xl shadow-lg overflow-hidden character-card';
+                card.dataset.value = activity.value;
+
+                card.innerHTML = `
+                    <div class="relative h-48 overflow-hidden">
+                       <img src="${activity.imageUrl}" alt="${activity.character}" class="w-full h-full object-cover...">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex items-end">
+                            <div class="p-4">
+                                <h3 class="text-2xl font-chinese text-white">${activity.character}</h3>
+                                <p class="text-white/80 text-sm">${activity.pinyin}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-4">
+                        <h4 class="font-bold text-dark mb-1">${activity.meaning} / ${activity.thai}</h4>
+                    </div>
+                `;
+
+                card.addEventListener('click', function() {
+                    // 移除其他卡片的选中状态
+                    document.querySelectorAll('#activity .character-card').forEach(c => {
+                        c.classList.remove('ring-4', 'ring-primary');
+                    });
+                    
+                    // 添加选中状态
+                    this.classList.add('ring-4', 'ring-primary');
+                    
+                    // 保存用户选择
+                    userSelection.activity = this.dataset.value;
+                    
+                    // 启用下一步按钮
+                    document.getElementById('activityNextBtn').classList.remove('opacity-50', 'cursor-not-allowed');
+                });
+
+                container.appendChild(card);
+            });
+        }
+
+        // 初始化性别选择页面
+        function initGenderPage() {
+            const container = document.querySelector('#gender .grid');
+            container.innerHTML = '';
+
+            data.genders.forEach(gender => {
+                const card = document.createElement('div');
+                card.className = 'bg-white rounded-xl shadow-lg p-6 text-center card-hover';
+                card.dataset.value = gender.value;
+
+                let icon = gender.value === 'male' ? 'fa-mars' : 'fa-venus';
+                let color = gender.value === 'male' ? 'text-blue-500' : 'text-pink-500';
+
+                card.innerHTML = `
+                    <div class="text-4xl ${color} mb-3">
+                        <i class="fa-solid ${icon}"></i>
+                    </div>
+                    <div class="text-3xl font-chinese text-primary mb-2">${gender.character}</div>
+                    <div class="text-lg text-dark/80 mb-1">${gender.pinyin}</div>
+                    <div class="text-sm text-dark/60">${gender.meaning} / ${gender.thai}</div>
+                `;
+
+                card.addEventListener('click', function() {
+                    // 移除其他卡片的选中状态
+                    document.querySelectorAll('#gender .card-hover').forEach(c => {
+                        c.classList.remove('bg-primary/5', 'ring-2', 'ring-primary');
+                    });
+                    
+                    // 添加选中状态
+                    this.classList.add('bg-primary/5', 'ring-2', 'ring-primary');
+                    
+                    // 保存用户选择
+                    userSelection.gender = this.dataset.value;
+                    
+                    // 启用下一步按钮
+                    document.getElementById('genderNextBtn').classList.remove('opacity-50', 'cursor-not-allowed');
+                });
+
+                container.appendChild(card);
+            });
+        }
+
+        // 初始化名字长度选择页面
+        function initNameLengthPage() {
+            const container = document.querySelector('#nameLength .grid');
+            container.innerHTML = '';
+
+            data.nameLengths.forEach(length => {
+                const card = document.createElement('div');
+                card.className = 'bg-white rounded-xl shadow-lg p-6 text-center card-hover';
+                card.dataset.value = length.value;
+
+                card.innerHTML = `
+                    <div class="text-3xl font-chinese text-primary mb-2">${length.character}</div>
+                    <div class="text-lg text-dark/80 mb-1">${length.pinyin}</div>
+                    <div class="text-sm text-dark/60">${length.meaning} / ${length.thai}</div>
+                `;
+
+                card.addEventListener('click', function() {
+                    // 移除其他卡片的选中状态
+                    document.querySelectorAll('#nameLength .card-hover').forEach(c => {
+                        c.classList.remove('bg-primary/5', 'ring-2', 'ring-primary');
+                    });
+                    
+                    // 添加选中状态
+                    this.classList.add('bg-primary/5', 'ring-2', 'ring-primary');
+                    
+                    // 保存用户选择
+                    userSelection.nameLength = this.dataset.value;
+                    
+                    // 启用下一步按钮
+                    document.getElementById('lengthNextBtn').classList.remove('opacity-50', 'cursor-not-allowed');
+                });
+
+                container.appendChild(card);
+            });
+        }
+
+        // 生成名字
+        function generateName() {
+            const surname = userSelection.surname;
+            const nameLength = userSelection.nameLength;
+            const gender = userSelection.gender;
+            const character = userSelection.character;
+            const nature = userSelection.nature;
+            const activity = userSelection.activity;
+            
+            // 获取姓氏对应的常用名（如"王"对应的["伟", "芳", ...]）
+    	    const surnameNames = data.nameDictionary.surnames[surname] || [];
+
+	    // 从字典中获取候选名字列表
+            const genderNames = data.nameDictionary.genders[gender];
+            const characterNames = data.nameDictionary.characters[character];
+            const natureNames = data.nameDictionary.natures[nature];
+            const activityNames = data.nameDictionary.activities[activity];
+            
+            // 合并所有候选名字
+            let allNames = [...genderNames, ...characterNames, ...natureNames, ...activityNames];
+            
+            // 去重
+            allNames = [...new Set(allNames)];
+            
+            // 生成名字
+            let name = surname;
+            let pinyin = data.nameDictionary.pinyins[surname];
+            let meaning = `${surname} (${pinyin}): ${data.surnames.find(s => s.character === surname).thai}<br>`;
+            
+            // 根据名字长度生成名字
+            if (nameLength === "2") {
+                // 两个字的名字（一个姓氏+一个名字）
+                const givenName = allNames[Math.floor(Math.random() * allNames.length)];
+                name += givenName;
+                pinyin += ` ${data.nameDictionary.pinyins[givenName]}`;
+               meaning += `${givenName} (${data.nameDictionary.pinyins[givenName]}): ${data.nameDictionary.meanings[givenName][1]}`;
+    } else if (nameLength === "3") {
+                 // 三个字的名字（一个姓氏+两个名字）
+                const givenName1 = allNames[Math.floor(Math.random() * allNames.length)];
+                let givenName2;
+                
+                // 确保第二个字与第一个字不同
+                do {
+                    givenName2 = allNames[Math.floor(Math.random() * allNames.length)];
+                } while (givenName2 === givenName1);
+                
+                name += givenName1 + givenName2;
+                pinyin += ` ${data.nameDictionary.pinyins[givenName1]} ${data.nameDictionary.pinyins[givenName2]}`;
+        meaning += `${givenName1} (${data.nameDictionary.pinyins[givenName1]}): ${data.nameDictionary.meanings[givenName1][1]}<br>`;
+        meaning += `${givenName2} (${data.nameDictionary.pinyins[givenName2]}): ${data.nameDictionary.meanings[givenName2][1]}`;
+    }
+            
+            // 更新页面显示
+            document.getElementById('generatedName').textContent = name;
+            document.getElementById('generatedPinyin').textContent = pinyin;
+            document.getElementById('generatedMeaning').innerHTML = meaning;
+            
+            // 更新名字解析
+            updateNameExplanation(name);
+        }
+
+        // 更新名字解析
+        function updateNameExplanation(name) {
+            const surname = name[0];
+            const givenName = name.substring(1);
+            
+            // 根据名字生成含义解释
+            let meaningExplanation = `这个名字结合了"${surname}"姓和"`;
+            for (let i = 0; i < givenName.length; i++) {
+                meaningExplanation += givenName[i];
+                if (i < givenName.length - 1) {
+                    meaningExplanation += '"和"';
+                }
+            }
+            meaningExplanation += '"的含义，非常适合';
+            
+            // 根据用户选择的性格添加解释
+            const characterMap = {
+                "kind": "善良、有爱心的人",
+                "lively": "活泼开朗、充满活力的人",
+                "quiet": "安静、内敛的人",
+                "cold": "冷静、理智的人",
+                "serious": "认真、负责的人",
+                "humorous": "幽默风趣、乐观向上的人"
+            };
+            
+            meaningExplanation += characterMap[userSelection.character] || "有独特个性的人";
+            meaningExplanation += "。整体名字给人一种";
+            
+            // 根据用户选择的自然元素添加解释
+            // 根据用户选择的自然元素添加解释
+            const natureMap = {
+                "forest": "自然、清新的感觉",
+                "ocean": "宽广、包容的感觉",
+                "desert": "坚毅、不屈的感觉",
+                "sky": "自由、豁达的感觉"
+            };
+            
+            meaningExplanation += natureMap[userSelection.nature] || "独特而有魅力的感觉";
+            meaningExplanation += "。";
+            
+            // 更新文化背景解释
+            let cultureExplanation = `"${surname}"是中国常见的姓氏之一，历史悠久。"`;
+            for (let i = 0; i < givenName.length; i++) {
+                cultureExplanation += givenName[i];
+                cultureExplanation += '"代表';
+                cultureExplanation += data.nameDictionary.meanings[givenName[i]][0];
+                if (i < givenName.length - 1) {
+                    cultureExplanation += '，而"';
+                }
+            }
+            cultureExplanation += "，是一个富有正能量的字。";
+            
+            // 更新页面
+            document.getElementById('meaningExplanation').textContent = meaningExplanation;
+            document.getElementById('cultureExplanation').textContent = cultureExplanation;
+        }
+
+        // 重置所有选择
+        function resetAllSelections() {
+            userSelection.surname = null;
+            userSelection.character = null;
+            userSelection.nature = null;
+            userSelection.activity = null;
+            userSelection.gender = null;
+            userSelection.nameLength = null;
+            
+            // 重置按钮状态
+            document.getElementById('surnameNextBtn').classList.add('opacity-50', 'cursor-not-allowed');
+            document.getElementById('characterNextBtn').classList.add('opacity-50', 'cursor-not-allowed');
+            document.getElementById('natureNextBtn').classList.add('opacity-50', 'cursor-not-allowed');
+            document.getElementById('activityNextBtn').classList.add('opacity-50', 'cursor-not-allowed');
+            document.getElementById('genderNextBtn').classList.add('opacity-50', 'cursor-not-allowed');
+            document.getElementById('lengthNextBtn').classList.add('opacity-50', 'cursor-not-allowed');
+            
+            // 移除所有选中状态
+            document.querySelectorAll('.ring-4, .ring-primary, .ring-2, .bg-primary/5').forEach(el => {
+                el.classList.remove('ring-4', 'ring-primary', 'ring-2', 'bg-primary/5');
+            });
+        }
+
+        // 切换语言
+        function toggleLanguage() {
+            const currentLanguage = document.getElementById('languageText').textContent;
+            const newLanguage = currentLanguage === 'ไทย' ? '中文' : 'ไทย';
+            document.getElementById('languageText').textContent = newLanguage;
+            
+            // 这里可以实现语言切换的逻辑
+            // 为简化示例，这里仅切换按钮文本
+        }
+
+        // 显示帮助模态框
+        function showHelpModal(show) {
+            const modal = document.getElementById('helpModal');
+            const modalContent = document.getElementById('modalContent');
+            
+            if (show) {
+                modal.classList.remove('hidden');
+                // 触发重排后添加动画类
+                setTimeout(() => {
+                    modalContent.classList.remove('scale-95', 'opacity-0');
+                    modalContent.classList.add('scale-100', 'opacity-100');
+                }, 10);
+            } else {
+                modalContent.classList.remove('scale-100', 'opacity-100');
+                modalContent.classList.add('scale-95', 'opacity-0');
+            }
+        }
+
+        // 显示提示消息
+        function showToast(message, isError = false) {
+            // 创建toast元素
+            const toast = document.createElement('div');
+            toast.className = `fixed bottom-4 left-1/2 transform -translate-x-1/2 bg-${isError ? 'red' : 'green'}-500 text-white px-6 py-3 rounded-full shadow-lg z-50 transition-all duration-500 opacity-0`;
+            toast.textContent = message;
+            
+            // 添加到页面
+            document.body.appendChild(toast);
+            
+            // 显示toast
+            setTimeout(() => {
+                toast.classList.remove('opacity-0');
+                toast.classList.add('opacity-100');
+            }, 10);
+            
+            // 3秒后隐藏
+            setTimeout(() => {
+                toast.classList.remove('opacity-100');
+                toast.classList.add('opacity-0');
+                
+                // 完全隐藏后移除元素
+                setTimeout(() => {
+                    document.body.removeChild(toast);
+                }, 500);
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
+    
